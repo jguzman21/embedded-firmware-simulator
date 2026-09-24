@@ -12,6 +12,7 @@ add_executable(firmware_sim
     src/main.c
     src/firmware.c
     src/crc32.c
+    src/bootloader.c
 )
 
 target_include_directories(firmware_sim

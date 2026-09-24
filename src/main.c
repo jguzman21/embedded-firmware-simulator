@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "firmware.h"
+#include "bootloader.h"
 #include "crc32.h"
+#include "firmware.h"
 
 int main(void)
 {
-    printf("Embedded Firmware Simulator\n");
-    printf("===========================\n\n");
+    printf("=================================\n");
+    printf(" Embedded Firmware Simulator\n");
+    printf("=================================\n\n");
 
     FirmwareImage firmware = {0};
 
@@ -32,18 +34,17 @@ int main(void)
         );
     
     
+
     firmware_print_info(&firmware);
 
-    printf("\nValidation: ");
+    printf("\n=================================\n");
+    printf(" Starting Bootloader\n");
+    printf("=================================\n\n");
 
-    if (firmware_is_valid(&firmware))
-    {
-        printf("PASS\n");
-    }
-    else
-    {
-        printf("FAIL\n");
-    }
+    Bootloader bootloader;
+
+    bootloader_init(&bootloader, &firmware);
+    bootloader_run(&bootloader);
 
     return 0;
 }
