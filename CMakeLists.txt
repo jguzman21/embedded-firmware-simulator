@@ -11,6 +11,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 add_executable(firmware_sim
     src/main.c
     src/firmware.c
+    src/crc32.c
 )
 
 target_include_directories(firmware_sim

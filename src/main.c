@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "firmware.h"
+#include "crc32.h"
 
 int main(void)
 {
@@ -11,9 +13,25 @@ int main(void)
 
     firmware.header.magic = FIRMWARE_MAGIC;
     firmware.header.version = 1;
-    firmware.header.size = 4096;
-    firmware.header.checksum = 0x12345678;
 
+    const char *firmware_data =
+        "Embedded firmware version 1.0";
+
+    firmware.header.size = strlen(firmware_data);
+
+    memcpy(
+        firmware.data,
+        firmware_data,
+        firmware.header.size
+    );
+
+    firmware.header.crc32 =
+        crc32_calculate(
+            firmware.data,
+            firmware.header.size
+        );
+    
+    
     firmware_print_info(&firmware);
 
     printf("\nValidation: ");

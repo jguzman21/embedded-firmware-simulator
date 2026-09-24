@@ -12,7 +12,7 @@ typedef struct
     uint32_t magic;
     uint32_t version;
     uint32_t size;
-    uint32_t checksum;
+    uint32_t crc32;
 } FirmwareHeader;
 
 typedef struct
