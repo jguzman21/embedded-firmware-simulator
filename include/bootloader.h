@@ -29,6 +29,7 @@ typedef struct
     const FirmwareImage *previous_firmware;
 
     bool simulate_boot_failure;
+    bool application_ready;
 } Bootloader;
 
 void bootloader_init(

@@ -13,6 +13,9 @@ add_executable(firmware_sim
     src/firmware.c
     src/crc32.c
     src/bootloader.c
+    src/application.c
+    src/sensor.c
+    src/health_monitor.c
 )
 
 target_include_directories(firmware_sim

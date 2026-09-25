@@ -17,6 +17,7 @@ void bootloader_init(
     bootloader->staged_firmware = staged_firmware;
     bootloader->previous_firmware = NULL;
     bootloader->simulate_boot_failure = false;
+    bootloader->application_ready = false;
 }
 
 const char *bootloader_state_name(BootState state)
@@ -297,8 +298,8 @@ void bootloader_run(Bootloader *bootloader)
                     "[BOOTLOADER] Application started\n\n"
                 );
 
-                bootloader->state =
-                    BOOT_STATE_COMPLETE;
+                bootloader->application_ready = true;
+                bootloader->state = BOOT_STATE_COMPLETE;
 
                 break;
 
@@ -312,8 +313,8 @@ void bootloader_run(Bootloader *bootloader)
                     "[BOOTLOADER] System halted for recovery\n\n"
                 );
 
-                bootloader->state =
-                    BOOT_STATE_COMPLETE;
+                bootloader->application_ready = false;
+                bootloader->state = BOOT_STATE_COMPLETE;
 
                 break;
 

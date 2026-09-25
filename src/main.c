@@ -4,6 +4,7 @@
 #include "bootloader.h"
 #include "crc32.h"
 #include "firmware.h"
+#include "application.h"
 
 static FirmwareImage create_firmware(
     uint32_t version,
@@ -26,6 +27,7 @@ static FirmwareImage create_firmware(
             firmware.data,
             firmware.header.size
         );
+    
 
     return firmware;
 }
@@ -70,6 +72,17 @@ int main(void)
 
     bootloader.simulate_boot_failure = false;
     bootloader_run(&bootloader);
+
+    if (bootloader.application_ready)
+    {
+        application_run(5000);
+    }
+    else
+    {
+        printf(
+            "[SYSTEM] Application was not started.\n"
+        );
+    }
 
     return 0;
 }
