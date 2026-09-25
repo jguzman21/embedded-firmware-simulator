@@ -1,6 +1,6 @@
 # Embedded Firmware Simulator
 
-A host-based simulation of an embedded firmware platform written in C11.
+A host-based simulation of an embedded firmware platform written in C.
 
 The project models a bootloader that validates firmware integrity, manages simulated firmware updates and rollback, and then hands control to a concurrent application. The application simulates periodic sensor tasks, inter-task communication, health monitoring, and watchdog-based fault detection.
 
