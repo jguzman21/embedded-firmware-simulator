@@ -36,6 +36,7 @@ static FirmwareImage create_firmware(
 int main(int argc, char *argv[])
 {
     bool simulate_imu_hang = false;
+    bool has_rebooted = false;
 
     if (argc > 1 &&
         strcmp(argv[1], "--hang-imu") == 0)
@@ -71,29 +72,58 @@ int main(int argc, char *argv[])
     printf(" Starting Bootloader\n");
     printf("=================================\n\n");
 
-    Bootloader bootloader;
+    bool system_running = true;
 
-    bootloader_init(
-    &bootloader,
-    &firmware_v1,
-    &firmware_v2
-    );
-
-    bootloader.simulate_boot_failure = false;
-    bootloader_run(&bootloader);
-
-    if (bootloader.application_ready)
+    while (system_running)
     {
-        application_run(
+        Bootloader bootloader;
+
+        bootloader_init(
+            &bootloader,
+            &firmware_v1,
+            &firmware_v2
+        );
+
+        bootloader.simulate_boot_failure = false;
+
+        bootloader_run(&bootloader);
+
+        if (!bootloader.application_ready)
+        {
+            printf(
+                "[SYSTEM] Application was not started.\n"
+            );
+
+            break;
+        }
+
+    
+        bool inject_fault =
+            simulate_imu_hang && !has_rebooted;
+
+        ApplicationResult result =
+            application_run(
             5000,
-            simulate_imu_hang
+            inject_fault
         );
-    }
-    else
-    {
-        printf(
-            "[SYSTEM] Application was not started.\n"
-        );
+
+        if (result == APPLICATION_RESULT_WATCHDOG_FAULT)
+        {
+            printf("\n");
+            printf("=================================\n");
+            printf(" SYSTEM RESET REQUESTED\n");
+            printf("=================================\n\n");
+
+            has_rebooted = true;
+
+            printf(
+                "[SYSTEM] Restarting bootloader...\n\n"
+            );
+
+            continue;
+        }
+
+        system_running = false;
     }
 
     return 0;

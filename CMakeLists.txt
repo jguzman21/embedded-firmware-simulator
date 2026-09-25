@@ -31,3 +31,36 @@ target_link_libraries(firmware_sim
     PRIVATE
         Threads::Threads
 )
+
+enable_testing()
+
+add_executable(test_firmware
+    tests/test_firmware.c
+    src/firmware.c
+    src/crc32.c
+)
+
+target_include_directories(test_firmware
+    PRIVATE
+        include
+)
+
+add_test(
+    NAME FirmwareValidation_ValidImage
+    COMMAND test_firmware valid
+)
+
+add_test(
+    NAME FirmwareValidation_InvalidMagic
+    COMMAND test_firmware invalid_magic
+)
+
+add_test(
+    NAME FirmwareValidation_InvalidSize
+    COMMAND test_firmware invalid_size
+)
+
+add_test(
+    NAME FirmwareValidation_CorruptedData
+    COMMAND test_firmware corrupted
+)

@@ -313,7 +313,7 @@ static void *health_task(void *argument)
     return NULL;
 }
 
-void application_run(
+ApplicationResult application_run(
     uint32_t duration_ms,
     bool simulate_imu_hang)
 {
@@ -336,7 +336,7 @@ void application_run(
             "[APP] Failed to initialize sensor queue\n"
         );
 
-        return;
+        return APPLICATION_RESULT_COMPLETED;
     }
 
     if (!watchdog_init(
@@ -348,7 +348,7 @@ void application_run(
         );
 
         sensor_queue_destroy(&application.queue);
-        return;
+        return APPLICATION_RESULT_COMPLETED;
     }
 
     printf("\n");
@@ -491,6 +491,9 @@ void application_run(
         );
     }
 
+    bool watchdog_fault =
+    watchdog_is_fault(&application.watchdog);
+
     watchdog_stop(&application.watchdog);
     watchdog_destroy(&application.watchdog);
 
@@ -500,4 +503,11 @@ void application_run(
     printf("=================================\n");
     printf(" Concurrent Application Stopped\n");
     printf("=================================\n");
+
+    if (watchdog_fault)
+    {
+        return APPLICATION_RESULT_WATCHDOG_FAULT;
+    }
+
+    return APPLICATION_RESULT_COMPLETED;
 }
