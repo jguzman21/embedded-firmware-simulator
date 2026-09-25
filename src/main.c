@@ -5,25 +5,19 @@
 #include "crc32.h"
 #include "firmware.h"
 
-int main(void)
+static FirmwareImage create_firmware(
+    uint32_t version,
+    const char *data)
 {
-    printf("=================================\n");
-    printf(" Embedded Firmware Simulator\n");
-    printf("=================================\n\n");
-
     FirmwareImage firmware = {0};
 
     firmware.header.magic = FIRMWARE_MAGIC;
-    firmware.header.version = 1;
-
-    const char *firmware_data =
-        "Embedded firmware version 1.0";
-
-    firmware.header.size = strlen(firmware_data);
+    firmware.header.version = version;
+    firmware.header.size = strlen(data);
 
     memcpy(
         firmware.data,
-        firmware_data,
+        data,
         firmware.header.size
     );
 
@@ -32,10 +26,35 @@ int main(void)
             firmware.data,
             firmware.header.size
         );
-    
+
+    return firmware;
+}
+
+int main(void)
+{
+    printf("=================================\n");
+    printf(" Embedded Firmware Simulator\n");
+    printf("=================================\n\n");
+
+    FirmwareImage firmware_v1 =
+        create_firmware(
+            1,
+            "Embedded firmware version 1.0"
+        );
+
+    FirmwareImage firmware_v2 =
+        create_firmware(
+            2,
+            "Embedded firmware version 2.0"
+        );
+
     
 
-    firmware_print_info(&firmware);
+    printf("Current firmware:\n");
+    firmware_print_info(&firmware_v1);
+
+    printf("\nAvailable update:\n");
+    firmware_print_info(&firmware_v2);
 
     printf("\n=================================\n");
     printf(" Starting Bootloader\n");
@@ -43,7 +62,13 @@ int main(void)
 
     Bootloader bootloader;
 
-    bootloader_init(&bootloader, &firmware);
+    bootloader_init(
+    &bootloader,
+    &firmware_v1,
+    &firmware_v2
+    );
+
+    bootloader.simulate_boot_failure = false;
     bootloader_run(&bootloader);
 
     return 0;
