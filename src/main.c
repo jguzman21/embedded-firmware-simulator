@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "bootloader.h"
 #include "crc32.h"
@@ -32,8 +33,16 @@ static FirmwareImage create_firmware(
     return firmware;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    bool simulate_imu_hang = false;
+
+    if (argc > 1 &&
+        strcmp(argv[1], "--hang-imu") == 0)
+    {
+    simulate_imu_hang = true;
+    }   
+
     printf("=================================\n");
     printf(" Embedded Firmware Simulator\n");
     printf("=================================\n\n");
@@ -75,7 +84,10 @@ int main(void)
 
     if (bootloader.application_ready)
     {
-        application_run(5000);
+        application_run(
+            5000,
+            simulate_imu_hang
+        );
     }
     else
     {
