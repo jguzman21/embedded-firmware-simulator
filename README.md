@@ -298,7 +298,7 @@ The tests verify both valid firmware acceptance and rejection of invalid or corr
 
 This project intentionally uses a host-based implementation so embedded-system concepts can be developed and tested without physical hardware.
 
-The application uses POSIX threads as a stand-in for independently scheduled RTOS-style tasks. The project does **not** implement or claim to be a real RTOS.
+The application uses POSIX threads as a stand-in for independently scheduled RTOS-style tasks. The project does not implement or claim to be a real RTOS.
 
 Similarly, firmware installation, rollback, and sensor behavior are simulated in memory rather than performed through a microcontroller's flash controller, hardware peripherals, or physical sensors.
 
