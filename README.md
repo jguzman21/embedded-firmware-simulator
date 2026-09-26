@@ -326,6 +326,4 @@ Potential directions for a hardware-based version include:
 - Adding additional fault-injection scenarios
 - Expanding automated integration tests
 
-## Author
 
-Jonathan Guzman
